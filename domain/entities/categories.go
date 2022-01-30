@@ -3,7 +3,7 @@ package entities
 import "encoding/json"
 
 type Categories struct {
-	ID          string `json:"id,omitempty"`
+	ID          int    `json:"id,omitempty"`
 	Name        string `json:"name,omitempty"`
 	Description string `json:"description,omitempty"`
 }

@@ -46,7 +46,7 @@ var userType = graphql.NewObject(
 		Name: "User",
 		Fields: graphql.Fields{
 			"id": &graphql.Field{
-				Type: graphql.String,
+				Type: graphql.Int,
 			},
 			"userName": &graphql.Field{
 				Type: graphql.String,
@@ -94,13 +94,32 @@ var ResponseCategoriesType = graphql.NewObject(
 		},
 	},
 )
+var ResponseListCategoriesType = graphql.NewObject(
+	graphql.ObjectConfig{
+		Name: "ResponseListCategoriesType",
+		Fields: graphql.Fields{
+			"status": &graphql.Field{
+				Type: graphql.String,
+			},
+			"statusCode": &graphql.Field{
+				Type: graphql.Int,
+			},
+			"message": &graphql.Field{
+				Type: graphql.String,
+			},
+			"data": &graphql.Field{
+				Type: graphql.NewList(categoriesType),
+			},
+		},
+	},
+)
 
 var categoriesType = graphql.NewObject(
 	graphql.ObjectConfig{
 		Name: "Categories",
 		Fields: graphql.Fields{
 			"id": &graphql.Field{
-				Type: graphql.String,
+				Type: graphql.Int,
 			},
 			"name": &graphql.Field{
 				Type: graphql.String,
@@ -116,10 +135,23 @@ var CategoriesInputType = graphql.NewInputObject(
 		Name: "CategoriesInput",
 		Fields: graphql.InputObjectConfigFieldMap{
 			"id": &graphql.InputObjectFieldConfig{
-				Type: graphql.String,
+				Type: graphql.NewNonNull(graphql.Int),
 			},
 			"name": &graphql.InputObjectFieldConfig{
 				Type: graphql.String,
+			},
+			"description": &graphql.InputObjectFieldConfig{
+				Type: graphql.String,
+			},
+		},
+	},
+)
+var CategoriesCreateInputType = graphql.NewInputObject(
+	graphql.InputObjectConfig{
+		Name: "CategoriesCreateInput",
+		Fields: graphql.InputObjectConfigFieldMap{
+			"name": &graphql.InputObjectFieldConfig{
+				Type: graphql.NewNonNull(graphql.String),
 			},
 			"description": &graphql.InputObjectFieldConfig{
 				Type: graphql.String,
@@ -148,13 +180,32 @@ var ResponseProductType = graphql.NewObject(
 		},
 	},
 )
+var ResponseListProductType = graphql.NewObject(
+	graphql.ObjectConfig{
+		Name: "ResponseListProductType",
+		Fields: graphql.Fields{
+			"status": &graphql.Field{
+				Type: graphql.String,
+			},
+			"statusCode": &graphql.Field{
+				Type: graphql.Int,
+			},
+			"message": &graphql.Field{
+				Type: graphql.String,
+			},
+			"data": &graphql.Field{
+				Type: graphql.NewList(productType),
+			},
+		},
+	},
+)
 
 var productType = graphql.NewObject(
 	graphql.ObjectConfig{
 		Name: "Product",
 		Fields: graphql.Fields{
 			"id": &graphql.Field{
-				Type: graphql.String,
+				Type: graphql.Int,
 			},
 			"categories": &graphql.Field{
 				Type: categoriesType,
@@ -174,13 +225,10 @@ var productType = graphql.NewObject(
 		},
 	},
 )
-var ProductInputType = graphql.NewInputObject(
+var ProductCreateInputType = graphql.NewInputObject(
 	graphql.InputObjectConfig{
-		Name: "ProductInput",
+		Name: "ProductCreateInput",
 		Fields: graphql.InputObjectConfigFieldMap{
-			"id": &graphql.InputObjectFieldConfig{
-				Type: graphql.String,
-			},
 			"categories": &graphql.InputObjectFieldConfig{
 				Type: graphql.NewNonNull(CategoriesInputType),
 			},
@@ -195,6 +243,31 @@ var ProductInputType = graphql.NewInputObject(
 			},
 			"stock": &graphql.InputObjectFieldConfig{
 				Type: graphql.NewNonNull(graphql.Int),
+			},
+		},
+	},
+)
+var ProductInputType = graphql.NewInputObject(
+	graphql.InputObjectConfig{
+		Name: "ProductInput",
+		Fields: graphql.InputObjectConfigFieldMap{
+			"id": &graphql.InputObjectFieldConfig{
+				Type: graphql.NewNonNull(graphql.Int),
+			},
+			"categories": &graphql.InputObjectFieldConfig{
+				Type: CategoriesInputType,
+			},
+			"name": &graphql.InputObjectFieldConfig{
+				Type: graphql.String,
+			},
+			"price": &graphql.InputObjectFieldConfig{
+				Type: graphql.Float,
+			},
+			"description": &graphql.InputObjectFieldConfig{
+				Type: graphql.String,
+			},
+			"stock": &graphql.InputObjectFieldConfig{
+				Type: graphql.Int,
 			},
 		},
 	},

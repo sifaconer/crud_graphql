@@ -1,17 +1,24 @@
 package utils
 
-import "encoding/json"
+import (
+	"crypto/sha512"
+	"encoding/hex"
+)
 
-// Transcode : params=data input graphql, model=struct model to load data
-func Transcode(params map[string]interface{}, model interface{}) error {
-	jsondata, err := json.Marshal(params)
-	if err != nil {
-		return err
-	}
+const SALT = "secret-salt@#$%"
 
-	if err := json.Unmarshal(jsondata, model); err != nil {
-		return err
-	}
+func HashPassword(password string) string {
+	var passwordBytes = []byte(password)
 
-	return nil
+	var sha512Hasher = sha512.New()
+
+	passwordBytes = append(passwordBytes, []byte(SALT)...)
+	sha512Hasher.Write(passwordBytes)
+
+	var hashedPasswordBytes = sha512Hasher.Sum(nil)
+	return hex.EncodeToString(hashedPasswordBytes)
+}
+
+func CheckPasswordHash(password, hash string) bool {
+	return hash == HashPassword(password)
 }
