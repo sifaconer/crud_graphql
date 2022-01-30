@@ -1,46 +1,92 @@
-# CRUD GraphQl ent.io
+# CRUD GraphQl
 
-Api CRUD products and categories.
+Api CRUD products y categories.
 
-Api user access:
+Usuario por defecto:
 
 | username | password |
 | :------: | :------: |
 | user1    | $user1*  |
 
-## Requirement
-
-
 ## API
-Consume Api use Graphql.
+
+Consume del api usando Graphql Playground.
 
 **Description**
 
 - Port: 8182
-- [Playground: /api/gql/playground](http://127.0.0.1:8182/api/gql/playground)
-- [Api: /api/gql](http://127.0.0.1:8182/api/gql)
+
+- [Playground: /gql/playground](http://127.0.0.1:8182/gql/playground)
+
+- [Api: /gql/api](http://127.0.0.1:8182/gql/api)
 
 ## Database
-Database squeme mapping using [ent.io](https://entgo.io/)
 
-**Tables**
+- Database [Postgres v13](https://www.postgresql.org/)
+
+- ORM [ent.io](https://entgo.io/)
+
+**Tablas**
 
 - Users  
 
-| id | username | name | password |
-| -- | -------- | ---- | -------- |
+| Col. Name | Type     |
+| --------- | -------- |
+| id        | int      |
+| username  | string   |
+| name      | string   |
+| password  | string   |
+
 
 - Categories
 
-| id | name | description |
-| -- | ---- | -------- |
+| Col. Name | Type     |
+| --------- | -------- |
+| id        | int      |
+| name      | string   |
+| description  | string   |
 
 - Products
 
-| id | id_category | name | price | description | stock |
-| -- | ----------- | ---- | ----- | ----------- | ----- |
+| Col. Name | Type     |
+| --------- | -------- |
+| id | int |
+| id_category | int |
+| name | string |
+| price | float |
+| description | string |
+| stock | int |
 
 
-## Deployment
+## Despliegue
 
-## Develop
+Iniciar el servidor.
+
+**Variable de entorno**
+
+POSTGRES_URI="host=127.0.0.1 port=5432 user=root dbname=postgres password=root sslmode=disable"
+
+**Docker Compose**
+
+Ajuste los parámetros de postgres en la variable de entorno URI_DATABASE dentro del archivo docker-compose.yml
+
+Build and Run
+: docker-compose up -d
+
+**Docker**
+
+Build
+: docker build -t api:v1 .
+
+Run
+: docker run -e URI_DATABASE='{POSTGRES_URI}' -p 8182:8182 api:v1
+
+**Desarrollo**
+
+Install Task: [Task](https://taskfile.dev/#/)
+
+Run
+: task run
+
+Compile
+: task compile

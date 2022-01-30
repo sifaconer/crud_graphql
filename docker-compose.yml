@@ -4,6 +4,6 @@ services:
     container_name: "api"
     build: . 
     environment:
-      API_CURRENTLAYER_KEY:
+      URI_DATABASE: "host=127.0.0.1 port=5432 user=root dbname=postgres password=root sslmode=disable"
     ports:
       - 8182:8182
