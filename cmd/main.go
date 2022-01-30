@@ -5,16 +5,15 @@ import (
 	"gqlapi/infrastructure/database"
 	"gqlapi/infrastructure/gql"
 	"log"
-	"os"
 )
 
 func main() {
 
 	ctx := context.Background()
-	uriDB := ""
-	if uriDB = os.Getenv("URI_DATABASE"); len(uriDB) == 0 {
+	uriDB := "host=127.0.0.1 port=5432 user=root dbname=postgres password=root sslmode=disable"
+	/* if uriDB = os.Getenv("URI_DATABASE"); len(uriDB) == 0 {
 		log.Fatalf("ENV-ERROR: Environment variable [URI_DATABASE] is empty")
-	}
+	} */
 
 	db := database.Database{
 		UriDB: uriDB,

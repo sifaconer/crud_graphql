@@ -24,10 +24,16 @@ func (p ProductImpl) ListProduct() (entities.Response, error) {
 	}
 
 	for _, v := range allProduct {
+		pc, err := v.QueryCategories().Only(p.Ctx)
+		if err != nil {
+			return resp.Build(err.Error(), nil).Bad(), err
+		}
 		model = append(model, entities.Products{
 			ID: v.ID,
 			Categories: entities.Categories{
-				ID: v.IDCategories,
+				ID:          pc.ID,
+				Name:        pc.Name,
+				Description: pc.Description,
 			},
 			Price:       &v.Price,
 			Stock:       &v.Stock,
@@ -47,13 +53,23 @@ func (p ProductImpl) ProductById(id int) (entities.Response, error) {
 		Query().Where(product.ID(id)).
 		Only(p.Ctx)
 	if err != nil {
+		if ent.IsNotFound(err) {
+			return resp.Build("OK", nil).Ok(), nil
+		}
 		return resp.Build(err.Error(), nil).Bad(), nil
+	}
+
+	pc, err := idProduct.QueryCategories().Only(p.Ctx)
+	if err != nil {
+		return resp.Build(err.Error(), nil).Bad(), err
 	}
 
 	model = entities.Products{
 		ID: idProduct.ID,
 		Categories: entities.Categories{
-			ID: idProduct.IDCategories,
+			ID:          pc.ID,
+			Name:        pc.Name,
+			Description: pc.Description,
 		},
 		Price:       &idProduct.Price,
 		Stock:       &idProduct.Stock,
@@ -83,10 +99,16 @@ func (p ProductImpl) CreateProductsResolver(params map[string]interface{}) (enti
 		return resp.Build(err.Error(), nil).Bad(), err
 	}
 
+	pc, err := newProduct.QueryCategories().First(p.Ctx)
+	if err != nil {
+		return resp.Build(err.Error(), nil).Bad(), err
+	}
 	return resp.Build("Product Creado", entities.Products{
 		ID: newProduct.ID,
 		Categories: entities.Categories{
-			ID: newProduct.IDCategories,
+			ID:          pc.ID,
+			Name:        pc.Name,
+			Description: pc.Description,
 		},
 		Price:       &newProduct.Price,
 		Stock:       &newProduct.Stock,
@@ -101,6 +123,9 @@ func (p ProductImpl) DeleteProductsResolver(id int) (entities.Response, error) {
 	if err := p.DB.Product.
 		DeleteOneID(id).
 		Exec(p.Ctx); err != nil {
+		if ent.IsNotFound(err) {
+			return resp.Build("Product Borrado", nil).Ok(), nil
+		}
 		return resp.Build(err.Error(), nil).Bad(), err
 	}
 
@@ -120,13 +145,23 @@ func (p ProductImpl) UpdateProductsResolver(params map[string]interface{}) (enti
 		model).
 		Save(p.Ctx)
 	if err != nil {
+		if ent.IsNotFound(err) {
+			return resp.Build("Product Actualizado", nil).Ok(), nil
+		}
+		return resp.Build(err.Error(), nil).Bad(), err
+	}
+
+	pc, err := updateProduct.QueryCategories().Only(p.Ctx)
+	if err != nil {
 		return resp.Build(err.Error(), nil).Bad(), err
 	}
 
 	return resp.Build("Product Actualizado", entities.Products{
 		ID: updateProduct.ID,
 		Categories: entities.Categories{
-			ID: updateProduct.IDCategories,
+			ID:          pc.ID,
+			Name:        pc.Name,
+			Description: pc.Description,
 		},
 		Price:       &updateProduct.Price,
 		Stock:       &updateProduct.Stock,

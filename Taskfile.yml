@@ -6,4 +6,7 @@ tasks:
   run:
     cmds:
       - go run ./cmd/main.go
-    silent: false
+  
+  ent:
+    cmds:
+      - go generate ./infrastructure/database/ent

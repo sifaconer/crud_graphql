@@ -38,17 +38,13 @@ func ValidJWT(tokenJWT string) error {
 		return errors.New("sin acceso por falta de token")
 	}
 
-	token, err := jwt.Parse(tokenJWT, func(t *jwt.Token) (interface{}, error) {
+	_, err := jwt.Parse(tokenJWT, func(t *jwt.Token) (interface{}, error) {
 		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, errors.New("token no valido")
 		}
 
-		return secret, nil
+		return []byte(secret), nil
 	})
 
-	if _, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		return nil
-	} else {
-		return err
-	}
+	return err
 }

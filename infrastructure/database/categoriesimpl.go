@@ -42,7 +42,10 @@ func (c CategoriesImpl) CategoriesById(id int) (entities.Response, error) {
 		Query().Where(categories.ID(id)).
 		Only(c.Ctx)
 	if err != nil {
-		return resp.Build(err.Error(), nil).Bad(), nil
+		if ent.IsNotFound(err) {
+			return resp.Build("OK", nil).Ok(), nil
+		}
+		return resp.Build(err.Error(), nil).Bad(), err
 	}
 
 	model = entities.Categories{
@@ -83,6 +86,9 @@ func (c CategoriesImpl) DeleteCategoriesResolver(id int) (entities.Response, err
 	if err := c.DB.Categories.
 		DeleteOneID(id).
 		Exec(c.Ctx); err != nil {
+		if ent.IsNotFound(err) {
+			return resp.Build("Categoria Borrada", nil).Ok(), nil
+		}
 		return resp.Build(err.Error(), nil).Bad(), err
 	}
 
@@ -102,6 +108,9 @@ func (c CategoriesImpl) UpdateCategoriesResolver(params map[string]interface{}) 
 		model).
 		Save(c.Ctx)
 	if err != nil {
+		if ent.IsNotFound(err) {
+			return resp.Build("Categoria Actualizada", nil).Ok(), nil
+		}
 		return resp.Build(err.Error(), nil).Bad(), err
 	}
 
@@ -109,7 +118,7 @@ func (c CategoriesImpl) UpdateCategoriesResolver(params map[string]interface{}) 
 		ID:          updateCategories.ID,
 		Name:        updateCategories.Name,
 		Description: updateCategories.Description,
-	}), nil
+	}).Ok(), nil
 }
 
 func (c CategoriesImpl) queryBuilder(categoriesUpdate *ent.CategoriesUpdateOne, model entities.Categories) *ent.CategoriesUpdateOne {

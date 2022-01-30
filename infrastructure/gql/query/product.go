@@ -11,7 +11,7 @@ import (
 
 func ListProducts(repo repository.ProductRepository) *graphql.Field {
 	return &graphql.Field{
-		Type:        types.ResponseProductType,
+		Type:        types.ResponseListProductType,
 		Description: "Products list",
 		Resolve: func(p graphql.ResolveParams) (interface{}, error) {
 			if err := auth.ValidJWT(p.Info.RootValue.(map[string]interface{})["jwt"].(string)); err != nil {
